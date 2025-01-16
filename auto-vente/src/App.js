@@ -18,7 +18,7 @@ import Contact from './components/Contact';
 import VehicleDetailPage from './components/VehicleDetailPage';
 import UnauthorizedPage from './services/UnauthorizedPage';
 import { AuthProvider } from './components/AuthProvider';
-
+import RegisterPage from './components/RegisterPage';
 function App() {
   return (
     <AuthProvider> 
@@ -35,7 +35,7 @@ function App() {
         <Route path="/vehicule-form" element={<VehicleForm />} />
         <Route path="/vehicle/:id" element={<VehicleDetailPage />} /> 
         <Route path='/contact' element={<Contact />} />
-        
+        <Route path='/register' element={<RegisterPage />} />
         {/* Routes protégées */}
         <Route 
           path="/admin" 

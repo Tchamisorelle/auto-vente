@@ -4,7 +4,7 @@ import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { FaGoogle } from 'react-icons/fa'; // Icône Google
 import { login } from "../services/auth-service";
 import AppLayout from './app-layout';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -118,6 +118,13 @@ const LoginPage = () => {
                   <span>Se connecter avec Google</span>
                 </Button>
               </div>
+              <p className="text-sm text-gray-400">
+                Pas encore de compte ?{' '}
+                <Link to="/register" className="text-blue-400 hover:underline">
+                  Créer un compte
+                </Link>
+              </p>
+
             </form>
           </CardContent>
         </Card>

@@ -20,6 +20,7 @@ export function Alert({ className = '', children, ...props }) {
   );
 }
 
+
 export function AlertTitle({ className = '', children, ...props }) {
   return (
     <h4
@@ -70,6 +71,24 @@ export function CardHeader({ className = '', children, ...props }) {
       {...props}
     >
       {children}
+    </div>
+  );
+}
+// Textarea component
+export function Textarea({ className = '', value, onChange, placeholder, rows = 4, ...props }) {
+  return (
+    <div className={classNames("space-y-2", className)}>
+      <textarea
+        className={classNames(
+          "w-full p-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
+          className
+        )}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        rows={rows}
+        {...props}
+      />
     </div>
   );
 }
