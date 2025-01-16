@@ -89,3 +89,17 @@ export const deleteVehicle = async (vehicleId) => {
     throw error;
   }
 };
+// src/services/api.js
+
+export const fetchOrders = async () => {
+  try {
+      const response = await fetch('/api/orders'); // Remplacez par votre endpoint réel
+      if (!response.ok) {
+          throw new Error('Erreur lors de la récupération des données');
+      }
+      return await response.json();
+  } catch (error) {
+      console.error('Erreur dans fetchOrders :', error);
+      throw error;
+  }
+};

@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
-import { User, LogIn, LogOut } from 'lucide-react'; // Ajoute des icônes pour login et logout
-import { Link, useNavigate } from 'react-router-dom'; // Ajoute useNavigate pour la redirection
+import { User, LogIn, LogOut } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthProvider';
 
 const UserDropdown = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { user, logout } = useAuth();
-  const navigate = useNavigate(); // Pour la redirection après déconnexion
+  const navigate = useNavigate();
 
   const handleDropdownToggle = () => setIsDropdownOpen(!isDropdownOpen);
+
   const handleLogout = () => {
-    logout(); // Appeler la fonction de déconnexion
-    setIsDropdownOpen(false); // Fermer le menu déroulant
-    navigate('/login'); // Rediriger vers la page de connexion
+    logout();
+    setIsDropdownOpen(false);
+    navigate('/login');
   };
 
   return (
@@ -29,7 +30,6 @@ const UserDropdown = () => {
           <div className="py-2">
             {user ? (
               <>
-                {/* Afficher l'option Profil et Déconnexion si l'utilisateur est connecté */}
                 <Link
                   to="/profile"
                   className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700"
@@ -44,7 +44,6 @@ const UserDropdown = () => {
                 </button>
               </>
             ) : (
-              // Afficher le lien de Connexion si l'utilisateur n'est pas connecté
               <Link
                 to="/login"
                 className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700"

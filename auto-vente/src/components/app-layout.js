@@ -1,14 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ShoppingCart, User, Menu, Shield } from 'lucide-react';
 import UserDropdown from './UserDropdown';
 import { useAuth } from './AuthProvider';
 
 const AppLayout = ({ children }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { user } = useAuth(); // Récupérer l'utilisateur via le contexte
+  const [role, setRole] = useState(null); // État pour le rôle de l'utilisateur
 
-  // Vérifier si l'utilisateur est admin
-  const isAdmin = user?.role === 'admin';
+  // Récupérer le rôle depuis localStorage lors du montage du composant
+  useEffect(() => {
+    const storedRole = localStorage.getItem('role');
+    console.log('Récupération du rôle depuis localStorage:', storedRole);  // Debug
+    setRole(storedRole);
+  }, []);
+ 
+  
+  // Vérifier si l'utilisateur est admin ou client
+  const isAdmin = role === 'admin';
+  const isClient = role === 'client';
 
   // Détecter la page active en fonction de l'URL
   const currentPath = window.location.pathname;
@@ -18,6 +27,9 @@ const AppLayout = ({ children }) => {
     `px-3 py-2 rounded-md text-sm font-medium ${
       currentPath === path ? 'bg-gray-700 text-blue-400' : 'hover:bg-gray-700'
     }`;
+
+  // Rendu conditionnel du layout en fonction du rôle
+  
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-900 text-gray-100">
@@ -34,7 +46,7 @@ const AppLayout = ({ children }) => {
             <div className="hidden md:flex items-center space-x-4">
               <a href="/" className={getNavLinkClass('/')}>Accueil</a>
               <a href="/catalogue" className={getNavLinkClass('/catalogue')}>Catalogue</a>
-              <a href="/cart" className={getNavLinkClass('/cart')}>Mes Commandes</a>
+              <a href="/order" className={getNavLinkClass('/order')}>Mes Commandes</a>
               <div className="flex items-center space-x-4">
                 <a href="/cart" className="p-2 rounded-full hover:bg-gray-700">
                   <ShoppingCart className="h-5 w-5" />
@@ -70,7 +82,7 @@ const AppLayout = ({ children }) => {
             <div className="px-2 pt-2 pb-3 space-y-1">
               <a href="/" className={getNavLinkClass('/')}>Accueil</a>
               <a href="/catalogue" className={getNavLinkClass('/catalogue')}>Catalogue</a>
-              <a href="/cart" className={getNavLinkClass('/cart')}>Mes Commandes</a>
+              <a href="/order" className={getNavLinkClass('/cart')}>Mes Commandes</a>
               {isAdmin && (
                 <a href="/admin" className={getNavLinkClass('/admin')}>Panneau Admin</a>
               )}

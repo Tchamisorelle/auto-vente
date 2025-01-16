@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input } from './ui';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
-import { FaGoogle } from 'react-icons/fa'; // Icône Google
-import { login } from "../services/auth-service";
-import AppLayout from './app-layout';
+import { FaGoogle } from 'react-icons/fa'; 
+import { useAuth } from './AuthProvider'; 
 import { useNavigate, Link } from 'react-router-dom';
+import AppLayout from './app-layout';
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -12,8 +12,21 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { user, login } = useAuth();
 
-  // Fonction de validation des champs
+  useEffect(() => {
+    if (user) {
+      // Rediriger si l'utilisateur est déjà connecté
+      if (user.role === 'admin') {
+        navigate('/admin');
+      } else if (user.role === 'client') {
+        navigate('/profile');
+      } else {
+        navigate('/');
+      }
+    }
+  }, [user, navigate]);
+
   const isValidEmail = (email) => /\S+@\S+\.\S+/.test(email);
 
   const handleLogin = async (e) => {
@@ -29,7 +42,8 @@ const LoginPage = () => {
 
     try {
       const userData = await login(credentials.email, credentials.password);
-      // Redirection basée sur le rôle
+      
+      // Redirection en fonction du rôle
       if (userData.role === 'admin') {
         navigate('/admin');
       } else if (userData.role === 'client') {
@@ -43,7 +57,7 @@ const LoginPage = () => {
       setLoading(false);
     }
   };
-  
+
   return (
     <AppLayout>
       <div className="min-h-screen flex items-center justify-center bg-gray-900 px-4">
@@ -124,7 +138,6 @@ const LoginPage = () => {
                   Créer un compte
                 </Link>
               </p>
-
             </form>
           </CardContent>
         </Card>
