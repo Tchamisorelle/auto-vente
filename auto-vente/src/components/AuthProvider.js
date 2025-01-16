@@ -1,46 +1,20 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+// AuthContext.js
+import React, { createContext, useContext, useState } from 'react';
 
-// Créer un contexte pour l'authentification
+// Créer un contexte
 const AuthContext = createContext();
 
-// Hook personnalisé pour accéder au contexte
-export const useAuth = () => useContext(AuthContext);
-
-// AuthProvider pour gérer l'état d'authentification et les données utilisateur
+// Provider qui enveloppe l'application et fournit l'authentification
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
-  // Récupérer les données de l'utilisateur depuis le localStorage au chargement
-  useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser)); // Charger l'utilisateur depuis localStorage
-    }
-  }, []);
-
-  // Fonction de login
-  const login = (credentials) => {
-    // Simuler des utilisateurs avec rôles
-    const simulatedUsers = {
-      admin: { email: 'admin@example.com', password: 'admin123', role: 'admin', name: 'Admin User' },
-      client: { email: 'client@example.com', password: 'client123', role: 'client', name: 'Client User' },
-    };
-
-    // Vérifier les informations d'identification et simuler une connexion
-    const userData = simulatedUsers[credentials.email === 'admin@example.com' ? 'admin' : 'client'];
-
-    if (userData && userData.password === credentials.password) {
-      localStorage.setItem('user', JSON.stringify(userData)); // Sauvegarder l'utilisateur dans le localStorage
-      setUser(userData); // Mettre à jour l'état utilisateur
-      return userData;
-    }
-
-    throw new Error('Email ou mot de passe incorrect');
+  // Fonction pour se connecter
+  const login = (userData) => {
+    setUser(userData);
   };
 
-  // Fonction de logout
+  // Fonction pour se déconnecter
   const logout = () => {
-    localStorage.removeItem('user');
     setUser(null);
   };
 
@@ -49,4 +23,13 @@ export const AuthProvider = ({ children }) => {
       {children}
     </AuthContext.Provider>
   );
+};
+
+// Hook pour accéder au contexte
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
 };

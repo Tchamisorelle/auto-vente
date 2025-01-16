@@ -1,95 +1,117 @@
 import React, { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input } from './ui';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
-import { FaGoogle } from 'react-icons/fa'; // Importation de l'icône Google depuis react-icons
-import { useAuth } from './AuthProvider';
-import AppLayout from './app-layout'; // Ajout de AppLayout
-import { useNavigate } from 'react-router-dom'; // Importation du hook useNavigate
+import { FaGoogle } from 'react-icons/fa'; // Icône Google
+import { login } from "../services/auth-service";
+import AppLayout from './app-layout';
+import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
-  const { login } = useAuth(); // Utilisation de la fonction login du contexte d'authentification
-  const [showPassword, setShowPassword] = useState(false); // Définir l'état pour afficher/masquer le mot de passe
-  const [credentials, setCredentials] = useState({ email: '', password: '' }); // Initialiser l'état des identifiants
-  const [loading, setLoading] = useState(false); // État de chargement lors de la connexion
-  const [error, setError] = useState(''); // État pour l'affichage des erreurs
-
-  // Initialisation de navigate pour rediriger après la connexion
+  const [showPassword, setShowPassword] = useState(false);
+  const [credentials, setCredentials] = useState({ email: '', password: '' });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  // Fonction de gestion de la connexion
+  // Fonction de validation des champs
+  const isValidEmail = (email) => /\S+@\S+\.\S+/.test(email);
+
   const handleLogin = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setError('');
-    
+    setLoading(true);
+
+    if (!isValidEmail(credentials.email)) {
+      setError("Veuillez entrer une adresse e-mail valide.");
+      setLoading(false);
+      return;
+    }
+
     try {
-      // Simuler la connexion de l'utilisateur
-      const userData = await login(credentials);  // La fonction login retourne les données de l'utilisateur
-      if (userData?.role === 'admin') {
-        navigate('/admin'); // Redirection vers la page admin si l'utilisateur est un admin
-      } else if (userData?.role === 'client') {
-        navigate('/profile'); // Redirection vers la page profil si l'utilisateur est un client
+      const userData = await login(credentials.email, credentials.password);
+      // Redirection basée sur le rôle
+      if (userData.role === 'admin') {
+        navigate('/admin');
+      } else if (userData.role === 'client') {
+        navigate('/profile');
       } else {
-        navigate('/'); // Redirection vers la page d'accueil pour d'autres rôles
+        navigate('/');
       }
-    } catch (error) {
-      setError('Email ou mot de passe incorrect');
+    } catch (err) {
+      setError(err.message || 'Erreur de connexion');
     } finally {
       setLoading(false);
     }
   };
-
+  
   return (
-    <AppLayout> {/* AppLayout entourant la page de connexion */}
+    <AppLayout>
       <div className="min-h-screen flex items-center justify-center bg-gray-900 px-4">
-        <Card className="w-full max-w-xl"> {/* Augmenter max-w-md à max-w-lg pour une carte plus large */}
+        <Card className="w-full max-w-xl">
           <CardHeader>
             <CardTitle>Connexion</CardTitle>
           </CardHeader>
           <CardContent>
-            {error && <div className="mb-4 p-3 bg-red-500/20 border border-red-500 rounded-lg text-red-500">{error}</div>}
-            
+            {/* Affichage des erreurs */}
+            {error && (
+              <div className="mb-4 p-3 bg-red-500/20 border border-red-500 rounded-lg text-red-500">
+                {error}
+              </div>
+            )}
+
+            {/* Formulaire de connexion */}
             <form onSubmit={handleLogin} className="space-y-4">
+              {/* Champ email */}
               <div className="space-y-2">
-                <label className="text-sm font-medium">Email</label>
+                <label className="text-sm font-medium" htmlFor="email">Email</label>
                 <div className="relative">
                   <Input
+                    id="email"
                     type="email"
                     placeholder="nom@exemple.com"
                     value={credentials.email}
                     onChange={(e) => setCredentials({ ...credentials, email: e.target.value })}
                     className="pl-10"
+                    aria-label="Adresse e-mail"
                   />
                   <Mail className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
                 </div>
               </div>
 
+              {/* Champ mot de passe */}
               <div className="space-y-2">
-                <label className="text-sm font-medium">Mot de passe</label>
+                <label className="text-sm font-medium" htmlFor="password">Mot de passe</label>
                 <div className="relative">
                   <Input
+                    id="password"
                     type={showPassword ? 'text' : 'password'}
                     placeholder="Votre mot de passe"
                     value={credentials.password}
                     onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
                     className="pl-10 pr-12"
+                    aria-label="Mot de passe"
                   />
                   <Lock className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-300"
+                    aria-label={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
                   >
                     {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                   </button>
                 </div>
+                <a href="/forgot-password" className="text-sm text-blue-400 hover:underline">
+                  Mot de passe oublié ?
+                </a>
               </div>
 
+              {/* Bouton de connexion */}
               <Button type="submit" variant="primary" className="w-full" disabled={loading}>
                 {loading ? 'Connexion...' : 'Se connecter'}
               </Button>
-              
-              {/* Bouton Google */}
+
+              {/* Connexion avec Google */}
               <div className="mt-6 flex items-center justify-center">
                 <Button variant="secondary" className="flex items-center space-x-2">
                   <FaGoogle className="h-5 w-5 text-gray-500" />

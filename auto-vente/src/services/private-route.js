@@ -1,18 +1,20 @@
-import React from 'react';
-import { Navigate } from 'react-router-dom';
-import { useAuth } from '../components/AuthProvider'; // Importer le hook useAuth
+import React from "react";
+import { Navigate, useLocation } from "react-router-dom";
+import { isAuthenticated, getUserRole } from "./auth-service";
 
-const PrivateRoute = ({ children }) => {
-  const { user } = useAuth(); // Accéder à l'état d'authentification
-  
-  if (!user) {
-    // Si l'utilisateur n'est pas authentifié, rediriger vers la page de connexion
-    return <Navigate to="/login" />;
+const PrivateRoute = ({ children, requiredRole }) => {
+  const location = useLocation();
+
+  if (!isAuthenticated()) {
+    return <Navigate to="/login" state={{ from: location }} />;
   }
 
+  const userRole = getUserRole();
+  if (requiredRole && userRole !== requiredRole) {
+    return <Navigate to="/unauthorized" />;
+  }
 
-  // Si l'utilisateur est un utilisateur normal (role !== 'admin')
-  return children; // Rendre les enfants (la page protégée pour l'utilisateur)
+  return children;
 };
 
 export default PrivateRoute;
