@@ -16,8 +16,8 @@ const AppLayout = ({ children }) => {
  
   
   // Vérifier si l'utilisateur est admin ou client
-  const isAdmin = role === 'admin';
-  const isClient = role === 'client';
+  const isAdmin = role === 'ADMIN';
+  const isClient = role === 'CLIENT';
 
   // Détecter la page active en fonction de l'URL
   const currentPath = window.location.pathname;

@@ -12,24 +12,25 @@ const RegisterPage = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isBusiness, setIsBusiness] = useState(false); // Détecter si l'utilisateur est un professionnel ou non
   const [credentials, setCredentials] = useState({
-    name: '',
-    firstName: '',
-    email: '',
-    phone: '',
-    address: '',
+    // name: '',
+    // firstName: '',
+    // email: '',
+    // phone: '',
+    // address: '',
     username: '',
     password: '',
-    confirmPassword: '',
-    language: '',
-    communicationMethod: '',
-    companyName: '',
-    registrationNumber: '',
-    companyAddress: '',
-    subsidiaries: '',
-    responsibleName: '',
-    responsibleContact: '',
-    bulkPurchase: false,
-    paymentTerms: ''
+    role : 'ADMIN'
+    // confirmPassword: '',
+    // language: '',
+    // communicationMethod: '',
+    // companyName: '',
+    // registrationNumber: '',
+    // companyAddress: '',
+    // subsidiaries: '',
+    // responsibleName: '',
+    // responsibleContact: '',
+    // bulkPurchase: false,
+    // paymentTerms: ''
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -43,17 +44,17 @@ const RegisterPage = () => {
     setError('');
     setLoading(true);
 
-    if (!isValidEmail(credentials.email)) {
-      setError("Veuillez entrer une adresse e-mail valide.");
-      setLoading(false);
-      return;
-    }
+    // if (!isValidEmail(credentials.email)) {
+    //   setError("Veuillez entrer une adresse e-mail valide.");
+    //   setLoading(false);
+    //   return;
+    // }
 
-    if (credentials.password !== credentials.confirmPassword) {
-      setError("Les mots de passe ne correspondent pas.");
-      setLoading(false);
-      return;
-    }
+    // if (credentials.password !== credentials.confirmPassword) {
+    //   setError("Les mots de passe ne correspondent pas.");
+    //   setLoading(false);
+    //   return;
+    // }
 
     try {
       await register(credentials);

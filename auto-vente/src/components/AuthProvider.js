@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
-      setUser(JSON.parse(storedUser)); // Récupérer et définir l'utilisateur
+      // setUser(JSON.parse(storedUser)); // Récupérer et définir l'utilisateur
     }
   }, []);
 
@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }) => {
       setUser(userData);
       localStorage.setItem('user', JSON.stringify(userData)); // Persister les données
     } catch (error) {
-      console.error('Erreur lors de la connexion :', error);
+      console.error('connexion echouer:', error);
       throw error; // Relancer pour être géré par le composant appelant
     }
   };

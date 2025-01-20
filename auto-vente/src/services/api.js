@@ -2,7 +2,7 @@
 
 // URLs de base pour les différents services
 const API_BASE_URL = 'http://localhost:3000/api'; // Frontend API (si applicable)
-const BASE_URL_USERS = 'http://localhost:8079/SERVICE-COSTUMER/api';
+const BASE_URL_USERS = 'http://localhost:8081/api/auth';
 const BASE_URL_ADMIN = 'http://localhost:8079/SERVICE-ADMIN/api';
 
 // Gestion centralisée des appels API

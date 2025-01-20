@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Dialog } from './ui';
-import { Plus, X } from 'lucide-react';
+import {  X } from 'lucide-react';
 
 const VehicleForm = ({ isOpen, onClose, onSubmit }) => {
   const [vehicle, setVehicle] = useState({
-    type: 'car',
+    type: 'car', // voiture par défaut
     fuelType: 'electric',
     name: '',
     price: '',
@@ -40,15 +40,45 @@ const VehicleForm = ({ isOpen, onClose, onSubmit }) => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit({
-      ...vehicle,
-      options: selectedOptions.map(id => 
-        vehicle.availableOptions.find(opt => opt.id === id)
-      )
-    });
-    onClose();
+
+    const vehicleData = {
+      name: vehicle.name,
+      price: vehicle.price,
+      numberOfDoors: 4
+      // stock: vehicle.stock,
+      // fuelType: vehicle.fuelType,
+      // options: selectedOptions.map(id => 
+      //   vehicle.availableOptions.find(opt => opt.id === id)
+      // )
+    };
+
+    const url = `/api/catalog/vehicles/${vehicle.type === 'car' ? 'car' : 'scooter'}`;
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(vehicleData)
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Erreur de l\'API:', errorData); // Affiche la réponse complète de l'API
+        throw new Error('Erreur lors de l\'ajout du véhicule');
+      }
+  
+      const data = await response.json();
+      console.log('Véhicule ajouté', data);
+      onSubmit(data);
+      onClose();
+    } catch (error) {
+      console.error('Erreur:', error);
+      alert('Une erreur est survenue lors de l\'ajout du véhicule');
+    }
   };
 
   return (

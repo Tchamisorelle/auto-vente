@@ -251,7 +251,7 @@ const AdminDashboard = () => {
   // Fonction pour récupérer les véhicules depuis l'API
   const fetchVehicles = async () => {
     try {
-      const response = await fetch('/api/vehicles');  // Remplace ceci par l'URL de ton API
+      const response = await fetch('/api/catalog/vehicles');  // Remplace par l'URL de ton API
       const data = await response.json();
       setVehicles(data);
       setFilteredVehicles(data);  // Initialiser les véhicules filtrés avec toutes les données
@@ -280,18 +280,47 @@ const AdminDashboard = () => {
     setIsFormOpen(false); // Fermer le formulaire
   };
 
-  const handleFormSubmit = (vehicleData) => {
-    if (isEditing) {
-      // Si c'est un véhicule existant, on met à jour les informations
-      setVehicles(vehicles.map(vehicle =>
-        vehicle.id === vehicleData.id ? vehicleData : vehicle
-      ));
-    } else {
-      // Sinon, on ajoute un nouveau véhicule
-      setVehicles([...vehicles, vehicleData]);
+  const handleFormSubmit = async (vehicleData) => {
+    try {
+      if (isEditing) {
+        // Mise à jour du véhicule
+        const response = await fetch(`/api/catalog/vehicles/${vehicleData.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(vehicleData),
+        });
+        const updatedVehicle = await response.json();
+        setVehicles(vehicles.map(vehicle => vehicle.id === updatedVehicle.id ? updatedVehicle : vehicle));
+      } else {
+        // Ajout d'un nouveau véhicule
+        const response = await fetch(`/api/catalog/vehicles/${vehicleData.type}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(vehicleData),
+        });
+        const newVehicle = await response.json();
+        setVehicles([...vehicles, newVehicle]);
+      }
+      setIsFormOpen(false);
+      filterVehicles(searchQuery, vehicleTypeFilter);
+    } catch (error) {
+      console.error("Erreur lors de l'ajout ou de la mise à jour du véhicule:", error);
     }
-    setIsFormOpen(false);
-    filterVehicles(searchQuery, vehicleTypeFilter);
+  };
+
+  const handleDeleteVehicle = async (id) => {
+    try {
+      await fetch(`/api/catalog/vehicles/${id}`, {
+        method: 'DELETE',
+      });
+      setVehicles(vehicles.filter(vehicle => vehicle.id !== id));
+    } catch (error) {
+      console.error("Erreur lors de la suppression du véhicule:", error);
+    }
   };
 
   const filterVehicles = (searchQuery, vehicleTypeFilter) => {
@@ -437,7 +466,7 @@ const AdminDashboard = () => {
                               <button className="p-2 hover:bg-gray-700 rounded" onClick={() => handleEditVehicleClick(vehicle)}>
                                 <Edit className="h-4 w-4" />
                               </button>
-                              <button className="p-2 hover:bg-gray-700 rounded">
+                              <button className="p-2 hover:bg-gray-700 rounded" onClick={() => handleDeleteVehicle(vehicle.id)}>
                                 <Trash2 className="h-4 w-4" />
                               </button>
                               <button className="p-2 hover:bg-gray-700 rounded">

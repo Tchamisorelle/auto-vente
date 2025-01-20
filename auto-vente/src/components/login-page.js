@@ -17,9 +17,9 @@ const LoginPage = () => {
   useEffect(() => {
     if (user) {
       // Rediriger si l'utilisateur est déjà connecté
-      if (user.role === 'admin') {
+      if (user.role === 'ADMIN') {
         navigate('/admin');
-      } else if (user.role === 'client') {
+      } else if (user.role === 'CLIENT') {
         navigate('/profile');
       } else {
         navigate('/');
@@ -44,15 +44,15 @@ const LoginPage = () => {
       const userData = await login(credentials.email, credentials.password);
       
       // Redirection en fonction du rôle
-      if (userData.role === 'admin') {
+      if (userData.role === 'ADMIN') {
         navigate('/admin');
-      } else if (userData.role === 'client') {
+      } else if (userData.role === 'CLIENT') {
         navigate('/profile');
       } else {
         navigate('/');
       }
     } catch (err) {
-      setError(err.message || 'Erreur de connexion');
+      setError(err.message || 'Erreur');
     } finally {
       setLoading(false);
     }
